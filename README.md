@@ -72,6 +72,7 @@ While Docker and VMs have their own advantages and use cases, they can also be u
 # Docker in-depth
 **Docker CLI cheat sheet**
 <img src="https://raw.githubusercontent.com/sangam14/dockercheatsheets/master/dockercheatsheet8.png">
+
 ## Dockerfile
 
 [*official documentation*](https://docs.docker.com/engine/reference/builder/)
