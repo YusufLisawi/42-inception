@@ -125,10 +125,11 @@ CMD ["mariadb"]
 ```
 
 - You can build your image using this command:
-```
+```sh
  # -t Option to specify the image name.
- docker build -t my_img /path/to/dockerfile/
+ docker build -t img_name /path/to/dockerfile/
 ```
-```
+```sh
+# --env-file to specify the .env file
 docker build --env-file .env -t my_image /path/to/dockerfile/
 ```
