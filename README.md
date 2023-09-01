@@ -40,7 +40,7 @@ Docker containers are designed to save time in the deployment process of an appl
 Docker containers provide a more flexible and lightweight approach to application deployment.
 
 ### Docker engine
-<img src="https://www.docker.com/wp-content/uploads/2021/10/Docker-Website-2018-Diagrams-071918-V5_a-Docker-Engine-page-first-panel.png">
+<img src="https://www.docker.com/wp-content/uploads/2021/10/Docker-Website-2018-Diagrams-071918-V5_a-Docker-Engine-page-first-panel.png" width="50%">
 
 - Docker Engine is responsible for creating and managing Docker objects like images, containers, networks, and volumes.
 - It consists of a server-side daemon process called dockerd, a REST API, and a client-side command-line interface (CLI) called docker.
@@ -67,11 +67,19 @@ Daemon is a program that runs continuously as a background process in a multitas
 
 While Docker and VMs have their own advantages and use cases, they can also be used together. Docker containers can be run on virtual machines, combining the flexibility and lightweight nature of Docker with the security and isolation of VMs. This allows organizations to cover a range of use cases and make their virtual resources as flexible as possible.
 
-<img src="https://f4n3x6c5.stackpathcdn.com/article/containerization-of-applications/Images/Containerization%20of%20Applications.png">
+<img src="https://f4n3x6c5.stackpathcdn.com/article/containerization-of-applications/Images/Containerization%20of%20Applications.png" width="50%">
 
 # Docker in-depth
-**Docker CLI cheat sheet**
-<img src="https://raw.githubusercontent.com/sangam14/dockercheatsheets/master/dockercheatsheet8.png">
+**Docker CLI cheat sheet**<br>
+<img src="https://raw.githubusercontent.com/sangam14/dockercheatsheets/master/dockercheatsheet8.png" width="50%">
+
+## Image
+An image in Docker is a read-only template that contains the instructions for creating a Docker container. It is a snapshot of a Docker container that includes the application code, runtime, system tools, libraries, and settings. Images are used to create containers, and they can be shared and reused across different environments.
+
+## Container
+A container in Docker is a lightweight, standalone, and executable package of software that includes everything needed to run an application, including the code, runtime, system tools, libraries, and settings. Containers are isolated from each other and from the host system, which makes them portable and easy to deploy across different environments.
+
+When you run a Docker container, it is created from an image. The container is an instance of the image, and it can be started, stopped, and deleted without affecting the image. You can create multiple containers from the same image, and each container will have its own isolated environment.
 
 ## Dockerfile
 
