@@ -72,6 +72,7 @@ While Docker and VMs have their own advantages and use cases, they can also be u
 # Docker in-depth
 **Docker CLI cheat sheet**<br>
 <img src="https://raw.githubusercontent.com/sangam14/dockercheatsheets/master/dockercheatsheet8.png" width="50%">
+<img src="https://intellipaat.com/blog/wp-content/uploads/2022/10/Docker-Cheat-Sheet-2022.jpg" width="50%">
 
 ## Image
 An image in Docker is a read-only template that contains the instructions for creating a Docker container. It is a snapshot of a Docker container that includes the application code, runtime, system tools, libraries, and settings. Images are used to create containers, and they can be shared and reused across different environments.
@@ -141,3 +142,86 @@ CMD ["mariadb"]
 # --env-file to specify the .env file
 docker build --env-file .env -t my_image /path/to/dockerfile/
 ```
+
+---
+
+# Docker Compose
+
+Here's a sheet cheat:
+[docker-compose sheet cheat](https://devhints.io/docker-compose)
+
+## What is Docker Compose?
+
+**Docker Compose** is a tool for defining and running multi-container Docker applications. It allows you to define your application's services, networks, and volumes in a single YAML file, making it easier to manage and deploy complex applications with multiple interconnected containers. Docker Compose is particularly useful for development, testing, and production scenarios where multiple containers need to work together.
+
+## Uses of Docker Compose
+
+Docker Compose simplifies the following tasks:
+
+1. **Multi-Container Applications**: Easily define and manage applications composed of multiple containers that need to work together, such as web applications with databases, caching, and messaging services.
+
+2. **Service Definitions**: Specify the configuration for each service, including the base image, environment variables, ports, volumes, and more, all in a human-readable YAML format.
+
+3. **Networking**: Automatically create and manage isolated networks for your containers, allowing them to communicate securely with each other. You can also specify custom network configurations.
+
+4. **Volume Management**: Define named volumes for persisting data between container restarts and even between different containers. This is essential for databases and stateful applications.
+
+5. **Environment Configuration**: Set environment variables for containers, enabling you to customize container behavior without changing the container image.
+
+## Common Docker Compose Commands
+
+Here are some common Docker Compose commands and their explanations:
+
+### `docker-compose up`
+
+- **Description**: Start containers defined in the `docker-compose.yml` file.
+- **Usage**: `docker-compose up [options] [SERVICE...]`
+- **Options**:
+  - `-d, --detach`: Run containers in the background.
+- **Example**: `docker-compose up -d` starts containers in detached mode.
+
+### `docker-compose down`
+
+- **Description**: Stop and remove containers, networks, and volumes defined in the `docker-compose.yml` file.
+- **Usage**: `docker-compose down [options]`
+- **Options**:
+  - `--volumes`: Remove named volumes as well.
+- **Example**: `docker-compose down --volumes` stops and removes containers and associated volumes.
+
+### `docker-compose ps`
+
+- **Description**: List the status of containers in the current Docker Compose project.
+- **Usage**: `docker-compose ps`
+- **Example**: `docker-compose ps` displays the status of containers.
+
+### `docker-compose logs`
+
+- **Description**: View output logs from containers.
+- **Usage**: `docker-compose logs [options] [SERVICE...]`
+- **Options**:
+  - `-f, --follow`: Follow log output in real-time.
+- **Example**: `docker-compose logs -f` displays logs and follows new entries.
+
+### `docker-compose exec`
+
+- **Description**: Run a command in a running container.
+- **Usage**: `docker-compose exec [options] SERVICE COMMAND [ARGS...]`
+- **Example**: `docker-compose exec webserver sh` starts a shell session in the `webserver` container.
+
+### `docker-compose build`
+
+- **Description**: Build or rebuild services defined in the `docker-compose.yml` file.
+- **Usage**: `docker-compose build [options] [SERVICE...]`
+- **Options**:
+  - `--no-cache`: Do not use cached images.
+- **Example**: `docker-compose build` builds all services.
+
+### `docker-compose up`
+
+- **Description**: Start containers defined in the `docker-compose.yml` file.
+- **Usage**: `docker-compose up [options] [SERVICE...]`
+- **Options**:
+  - `-d, --detach`: Run containers in the background.
+- **Example**: `docker-compose up -d` starts containers in detached mode.
+
+These are just a few of the many commands and options available in Docker Compose. It's a powerful tool for simplifying the management of multi-container applications and improving the development and deployment process.
