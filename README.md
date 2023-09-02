@@ -168,6 +168,37 @@ Docker Compose simplifies the following tasks:
 
 5. **Environment Configuration**: Set environment variables for containers, enabling you to customize container behavior without changing the container image.
 
+## Docker Compose instructions
+
+```yaml
+version: '3'  # Specify the Compose file format version
+
+services:  # Define your services here
+
+  # Service 1: Custom Service (Using a Custom Dockerfile)
+  custom_service_1:
+    build:
+      context: ./myapp  # Specify the build context (directory containing the Dockerfile)
+      args:
+        - VAR_NAME=VALUE  # Define build arguments (if needed)
+    container_name: my_custom_container_1  # Assign a custom container name
+    expose:
+      - 8080  # Expose port 8080 within the container
+    networks:
+      - my_custom_network  # Connect to the custom Docker network named "my_custom_network"
+    volumes:
+      - ./host_data:/container_data:rw  # Mount the host directory into the container with read-write access
+      - my_named_volume:/container_volume:ro  # Mount a named volume with read-only access
+
+networks:
+  my_custom_network:  # Define a custom Docker network named "my_custom_network"
+    driver: bridge  # Specify the network driver as "bridge"
+
+volumes:
+  my_named_volume:  # Define a named volume named "my_named_volume" for data persistence
+
+```
+
 ## Common Docker Compose Commands
 
 Here are some common Docker Compose commands and their explanations:
@@ -225,3 +256,188 @@ Here are some common Docker Compose commands and their explanations:
 - **Example**: `docker-compose up -d` starts containers in detached mode.
 
 These are just a few of the many commands and options available in Docker Compose. It's a powerful tool for simplifying the management of multi-container applications and improving the development and deployment process.
+
+---
+
+# Docker Networks and Docker Volumes
+
+Docker provides two essential features for managing data and communication within containers: **Docker Networks** and **Docker Volumes**.
+
+## Docker Networks
+
+Docker Networks enable containers to communicate with each other and with external networks, allowing for isolated or interconnected services.
+
+### Types of Docker Networks
+
+1. **Bridge Network (Default)**:
+   - Containers on the same bridge network can communicate by container name.
+   - Isolated from the host network by default.
+   - Suitable for applications that require network isolation.
+
+2. **Host Network**:
+   - Shares the host's network namespace.
+   - Useful when performance is a top priority, but offers less isolation.
+
+3. **Overlay Network**:
+   - Spans multiple Docker hosts, facilitating communication between containers on different hosts.
+   - Commonly used in Docker Swarm clusters.
+
+4. **Macvlan Network**:
+   - Assigns a MAC address to each container, making it appear as a physical device on the network.
+   - Useful when containers need to be on the same network as physical devices.
+
+### How Docker Networks Work
+
+1. **Container Creation**: When you create a container, you can specify which network it should connect to.
+
+2. **Container Communication**: Containers on the same network can communicate with each other using container names or IP addresses.
+
+3. **External Communication**: Containers can access external networks and services by routing traffic through the host's network.
+
+## Docker Volumes
+
+Docker Volumes provide a way to persist and share data between containers and the host system. They are essential for managing data that should survive container restarts and removals.
+
+### Types of Docker Volumes
+
+1. **Named Volume**:
+   - Managed by Docker and can be named for easy identification.
+   - Can be shared between containers.
+   - Suitable for persisting application data.
+
+2. **Host-Mounted Volume**:
+   - Maps a directory from the host machine to a container's filesystem.
+   - Useful for sharing data between a container and the host.
+
+3. **Temporary Volume (Bind Mount)**:
+   - Maps a host directory to a container directory.
+   - Data is not persisted after the container stops.
+   - Suitable for configuration files or temporary data.
+
+### How Docker Volumes Work
+
+1. **Volume Creation**: You can create Docker volumes using `docker volume create` or have them automatically created when defining them in a `docker-compose.yml` file.
+
+2. **Volume Attachment**: Containers can be configured to use specific volumes by specifying them during container creation.
+
+3. **Data Persistence**: Data stored in Docker volumes persists even when the associated container is removed or stopped.
+
+4. **Data Sharing**: Volumes can be shared among multiple containers, enabling data sharing and synchronization.
+
+## Summary
+
+- Docker Networks facilitate communication between containers and external networks, offering isolation and connectivity options.
+- Docker Volumes are used for data persistence and sharing, making them crucial for storing application data and configurations.
+
+---
+
+# Creating Nginx Container
+
+Let's start by understanding what we'll be using;
+
+## What is NGINX?
+
+**NGINX** is a popular open-source web server, reverse proxy server, and load balancer. It's designed to efficiently handle concurrent connections, serve static content, reverse proxy to application servers, and perform other critical tasks in modern web architectures.
+
+Learn more about NGINX:
+- [NGINX Official Documentation](https://nginx.org/en/docs/)
+- [NGINX Wikipedia](https://en.wikipedia.org/wiki/Nginx)
+
+## What is a Web Server?
+
+A **web server** is a software application that accepts and responds to incoming HTTP (Hypertext Transfer Protocol) requests from clients, typically web browsers. Its primary role is to serve web content, which can be static files (HTML, CSS, JavaScript) or dynamic content generated by applications (e.g., PHP, Python, Node.js).
+
+Learn more about web servers:
+- [Web Server Wikipedia](https://en.wikipedia.org/wiki/Web_server)
+- [How Does a Web Server Work?](https://developer.mozilla.org/en-US/docs/Learn/Common_questions/What_is_a_web_server)
+
+## How Does a Web Server Work?
+
+Here's a simplified overview of how a web server works:
+
+1. **Client Request**: When you enter a URL in your web browser and hit Enter, it sends an HTTP request to a web server.
+
+2. **DNS Resolution**: The web browser uses DNS (Domain Name System) to resolve the domain name in the URL to an IP address.
+
+3. **Server Handling**: The web server receives the HTTP request and processes it. It may involve parsing the request, locating the requested resource, and handling dynamic content generation if necessary.
+
+4. **Resource Retrieval**: If the requested resource is a static file, the web server retrieves it from disk and sends it back to the client. If it's dynamic content, the web server may communicate with an application server to generate the content.
+
+5. **Response to Client**: The web server constructs an HTTP response containing the requested content and sends it back to the client's web browser.
+
+6. **Rendering**: The web browser receives the response and renders the web page for the user to view.
+
+## SSL vs. TLS: Secure Communication Protocols
+
+### What is SSL?
+
+**SSL (Secure Sockets Layer)** was an early cryptographic protocol designed to provide secure communication over the internet. However, SSL is no longer considered secure due to vulnerabilities.
+
+Learn more about SSL:
+- [SSL Wikipedia](https://en.wikipedia.org/wiki/Transport_Layer_Security)
+
+### What is TLS?
+
+**TLS (Transport Layer Security)** is the successor to SSL and provides secure communication between a client and a server. It ensures data confidentiality and integrity during transmission.
+
+Learn more about TLS:
+- [TLS Wikipedia](https://en.wikipedia.org/wiki/Transport_Layer_Security)
+
+### Difference Between SSL and TLS
+
+The main difference is that TLS is a more secure and updated version of SSL. In practice, people often refer to TLS as SSL for simplicity. Here's a real-world example to illustrate the difference:
+
+- **SSL**: Think of SSL as an older, less secure lock on your front door. While it might deter some intruders, it has known weaknesses.
+
+- **TLS**: TLS is like a modern, robust security system with a high-tech lock, surveillance cameras, and alarms. It's more reliable and resistant to attacks.
+
+Learn more about the difference between SSL and TLS:
+- [SSL vs. TLS: What's the Difference?](https://www.cloudflare.com/learning/ssl/ssl-vs-tls/)
+## Why is SSL/TLS Important?
+
+**SSL (Secure Sockets Layer) and its successor TLS (Transport Layer Security) are crucial for secure web communication**. They provide the encryption and authentication mechanisms needed to protect sensitive data transmitted over the internet. Here's why SSL/TLS is vital:
+
+## Why SSL/TLS Matters
+
+- **Privacy**: SSL/TLS encrypts data, keeping it private between users and websites.
+
+- **Integrity**: It ensures data isn't tampered with during transmission.
+
+- **Authentication**: SSL/TLS verifies website identities, preventing impersonation.
+
+- **Phishing Protection**: Users trust secure sites, reducing phishing risks.
+
+## How Does SSL/TLS Work?
+
+SSL/TLS uses a combination of symmetric and asymmetric cryptography to secure data transmission. Here's a simplified step-by-step process of how it works:
+
+1. **Handshake**: When a user accesses a secure website (e.g., https://example.com), the web server and browser initiate a handshake. During this process, they agree on encryption parameters and exchange cryptographic keys.
+
+2. **Key Exchange**: The server sends its public key to the browser. The public key is used for encryption. The browser generates a random symmetric encryption key and encrypts it with the server's public key. This ensures that only the server can decrypt the key.
+
+3. **Secure Data Exchange**: Once the handshake is complete, the server and browser use the shared symmetric key for data encryption and decryption. This key is known only to them, ensuring secure communication.
+
+4. **Data Integrity**: SSL/TLS also uses message authentication codes (MACs) to check data integrity. This ensures that data is not tampered with during transit.
+
+5. **Certificate Validation**: The browser validates the server's SSL/TLS certificate to verify the website's authenticity. If the certificate is valid, the browser displays a padlock icon or "https://" in the address bar.
+
+## Real-World Example
+
+When you shop online, SSL/TLS secures your credit card info, preventing snooping. It's like a secret code between you and the website, ensuring your data's safety.
+
+In summary, NGINX is a versatile web server and reverse proxy, a web server serves web content to clients, and TLS is the updated and more secure version of SSL used for securing data transmission over the internet. The difference between SSL and TLS is similar to using an old lock (SSL) versus a state-of-the-art security system (TLS) to protect your home.
+
+[Here's a great gist for nginx](https://gist.github.com/carlessanagustin/9509d0d31414804da03b)
+
+# Installation Steps
+
+## Step 1: Generating SSL/TLS certificates
+
+According to the assignment, we need to install a self-signed SSL certificate and work on port 443, and also change our domain name to username.42.fr. Let's start with a self-signed certificate.
+
+- [how to create a self signed ssl certificate for nginx](https://www.digitalocean.com/community/tutorials/how-to-create-a-self-signed-ssl-certificate-for-nginx-on-centos-7)
+
+You can create a self-signed key and certificate pair with OpenSSL in a single command by typing:
+```sh
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/nginx/nginx.key -out /etc/ssl/certs/yelaissa.42.fr.crt
+```
