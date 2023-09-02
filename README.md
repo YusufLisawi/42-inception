@@ -259,7 +259,7 @@ These are just a few of the many commands and options available in Docker Compos
 
 ---
 
-# Docker Networks and Docker Volumes
+## Docker Networks and Docker Volumes
 
 Docker provides two essential features for managing data and communication within containers: **Docker Networks** and **Docker Volumes**.
 
