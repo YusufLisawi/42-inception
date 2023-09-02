@@ -103,7 +103,7 @@ Here is an overview of the components of a Dockerfile:
 
 - **CMD:** The CMD instruction specifies the command to run when a container based on the image is started. It provides the default command or process that should be executed inside the container.
 
-These are some of the commonly used instructions in a Dockerfile. There are other instructions available as well, such as **ENV** for setting environment variables, **ENTRYPOINT** for configuring the container's main command, and VOLUME for creating a mount point for external volumes.
+These are some of the commonly used instructions in a Dockerfile. There are other instructions available as well, such as **ENV** for setting environment variables, **ENTRYPOINT** for configuring the container's main command, and **VOLUME** for creating a mount point for external volumes.
 
 It's important to note that Dockerfiles are case-sensitive and should be named "Dockerfile" with no file extension. They should be placed in the same directory as the application code or configuration files they reference.
 
@@ -439,5 +439,84 @@ According to the assignment, we need to install a self-signed SSL certificate an
 
 You can create a self-signed key and certificate pair with OpenSSL in a single command by typing:
 ```sh
-openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/nginx/nginx.key -out /etc/ssl/certs/yelaissa.42.fr.crt
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 
+    -keyout /etc/nginx/ssl/yelaissa.key 
+    -out /etc/nginx/ssl/yelaissa.crt 
+    -subj "/C=XX/ST=StateName/L=CityName/O=CompanyName/OU=CompanySectionName/CN=CommonNameOrHostname"
+```
+
+- **openssl**: This is the basic command line tool for creating and managing OpenSSL certificates, keys, and other files.
+- **req**: This subcommand specifies that you want to use X.509 certificate signing request (CSR) management. The “X.509” is a public key infrastructure standard that SSL and TLS adheres to for its key and certificate management. You want to create a new X.509 cert, so you are using this subcommand.
+- **x509**: This further modifies the previous subcommand by telling the utility that you want to make a self-signed certificate instead of generating a certificate signing request, as would normally happen.
+- **nodes**: This tells OpenSSL to skip the option to secure your certificate with a passphrase. You need Nginx to be able to read the file, without user intervention, when the server starts up. A passphrase would prevent this from happening because you would have to enter it after every restart.
+- **days 365**: This option sets the length of time that the certificate will be considered valid. You set it for one year here.
+- **newkey rsa:2048**: This specifies that you want to generate a new certificate and a new key at the same time. You did not create the key that is required to sign the certificate in a previous step, so you need to create it along with the certificate. The rsa:2048 portion tells it to make an RSA key that is 2048 bits long.
+- **keyout**: This line tells OpenSSL where to place the generated private key file that you are creating.
+- **out**: This tells OpenSSL where to place the certificate that you are creating.
+- **subj**: The -subj option is used to specify the subject of the certificate. The subject is a string that contains information about the entity that the certificate represents,
+    - C: Country
+    - ST: State or Province
+    - L: Locality or City
+    - O: Organization
+    - OU: Organizational Unit
+    - CN: Common Name or Hostname
+
+`Figure out how to generate the certification inside the container`
+
+## Step 2: Changing the hostname
+Next, we need to change the alias of our local domain (127.0.0.1) to the desired login.42.fr. Open the /etc/hosts file:
+
+sudo vim /etc/hosts
+
+And add to localhost our nickname.42.fr, in my case it’s yelaissa.42.fr(order doesn't matter):
+
+```vim
+##
+# Host Database
+#
+# localhost is used to configure the loopback interface
+# when the system is booting.  Do not change this entry.
+##
+127.0.0.1       yelaissa.42.fr localhost
+255.255.255.255 broadcasthost
+::1             localhost
+```
+
+You should run nginx using this command:
+
+```Dockerfile
+CMD ["nginx", "-g", "daemon off;"]
+```
+This way we run nginx directly and not in daemon mode. Daemon mode is a launch mode in which the application starts in the background or, in Windows parlance, as a service. For ease of debugging, we disable this mode and receive all nginx logs directly into the tty of the container.
+
+## Step 3: Creating the configuration file
+
+```conf
+server {
+    listen      443 ssl;
+    server_name  <your_nickname>.42.fr www.<your_nickname>.42.fr;
+    root    /var/www/;
+    index index.php index.html;
+    ssl_certificate     /etc/nginx/ssl/<your_nickname>.42.fr.crt;
+    ssl_certificate_key /etc/nginx/ssl/<your_nickname>.42.fr.key;
+    ssl_protocols       TLSv1.2 TLSv1.3;
+    ssl_session_timeout 10m;
+    keepalive_timeout 70;
+    location / {
+        try_files $uri /index.php?$args /index.html;
+        add_header Last-Modified $date_gmt;
+        add_header Cache-Control 'no-store, no-cache';
+        if_modified_since off;
+        expires off;
+        etag off;
+    }
+#    location ~ \.php$ {
+#        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+#        fastcgi_pass wordpress:9000;
+#        fastcgi_index index.php;
+#        include fastcgi_params;
+#        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+#        fastcgi_param PATH_INFO $fastcgi_path_info;
+#    }
+}
 ```
