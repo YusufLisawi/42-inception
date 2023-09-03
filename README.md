@@ -506,6 +506,7 @@ http {
     # SERVER BLOCK: Configuration for a specific website
     server {
         listen 80;  # Port to listen on (HTTP)
+        listen [::]:80; # Accept all ipv6 addresses
 
         server_name example.com;  # Domain name for this server block
 
@@ -513,6 +514,8 @@ http {
         location / {
             root /var/www/html;  # Root directory for static files
             index index.html;     # Default file to serve if URL ends with '/'
+             # Try to find the requested file, or fallback to index.php or index.html
+            try_files $uri /index.php?$args /index.html =404;
         }
 
         # LOCATION BLOCK: Proxy requests to a backend server
@@ -542,7 +545,7 @@ http {
 
 `Now let's explain nginx conf syntax:`
 
-[Full documentation](http://nginx.org/en/docs/beginners_guide.html)
+[Full documentation](http://nginx.org/en/docs/beginners_guide.html )
 
 This is called a directive
 ```
