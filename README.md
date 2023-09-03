@@ -2,7 +2,7 @@
 
 Inception is a DevOps project that leverages Docker to create and link containers.
 
-## Introduction
+# Introduction
 
 ## Containerization
 Containerization is a software deployment method that packages an application and its dependencies into a self-contained unit called a container. It isolates the application from the underlying infrastructure, making it portable and consistent across different environments.
@@ -491,14 +491,16 @@ This way we run nginx directly and not in daemon mode. Daemon mode is a launch m
 
 ## Step 3: Creating the configuration file
 
+Create the `nginx.conf`
+
 ```conf
 server {
     listen      443 ssl;
     server_name  <your_nickname>.42.fr www.<your_nickname>.42.fr;
     root    /var/www/;
     index index.php index.html;
-    ssl_certificate     /etc/nginx/ssl/<your_nickname>.42.fr.crt;
-    ssl_certificate_key /etc/nginx/ssl/<your_nickname>.42.fr.key;
+    ssl_certificate     /etc/nginx/ssl/YOURSSL.crt;
+    ssl_certificate_key /etc/nginx/ssl/YOURSSL.key;
     ssl_protocols       TLSv1.2 TLSv1.3;
     ssl_session_timeout 10m;
     keepalive_timeout 70;
@@ -520,3 +522,5 @@ server {
 #    }
 }
 ```
+
+`Now let's explain:`
