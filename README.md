@@ -494,33 +494,68 @@ This way we run nginx directly and not in daemon mode. Daemon mode is a launch m
 Create the `nginx.conf`
 
 ```conf
-server {
-    listen      443 ssl;
-    server_name  <your_nickname>.42.fr www.<your_nickname>.42.fr;
-    root    /var/www/;
-    index index.php index.html;
-    ssl_certificate     /etc/nginx/ssl/YOURSSL.crt;
-    ssl_certificate_key /etc/nginx/ssl/YOURSSL.key;
-    ssl_protocols       TLSv1.2 TLSv1.3;
-    ssl_session_timeout 10m;
-    keepalive_timeout 70;
-    location / {
-        try_files $uri /index.php?$args /index.html;
-        add_header Last-Modified $date_gmt;
-        add_header Cache-Control 'no-store, no-cache';
-        if_modified_since off;
-        expires off;
-        etag off;
+# NGINX Configuration Cheat Sheet
+
+# EVENTS BLOCK: Global settings related to connections
+events {
+    worker_connections 1024;  # Maximum number of connections per worker process
+}
+
+# HTTP BLOCK: HTTP-related settings and server blocks
+http {
+    # SERVER BLOCK: Configuration for a specific website
+    server {
+        listen 80;  # Port to listen on (HTTP)
+
+        server_name example.com;  # Domain name for this server block
+
+        # LOCATION BLOCK: How to handle requests for specific URLs
+        location / {
+            root /var/www/html;  # Root directory for static files
+            index index.html;     # Default file to serve if URL ends with '/'
+        }
+
+        # LOCATION BLOCK: Proxy requests to a backend server
+        location /api/ {
+            proxy_pass http://backend-server;  # Proxy requests to another server
+        }
+
+        # SSL/TLS CONFIGURATION: Enable HTTPS and specify certificates
+        listen 443 ssl;  # Port to listen on (HTTPS) with SSL/TLS
+        ssl_certificate /etc/nginx/ssl/server.crt;       # SSL certificate
+        ssl_certificate_key /etc/nginx/ssl/server.key;   # Private key
+
+        # REDIRECT HTTP TO HTTPS: Force HTTPS
+        if ($scheme != "https") {
+            rewrite ^ https://$host$request_uri permanent;
+        }
     }
-#    location ~ \.php$ {
-#        fastcgi_split_path_info ^(.+\.php)(/.+)$;
-#        fastcgi_pass wordpress:9000;
-#        fastcgi_index index.php;
-#        include fastcgi_params;
-#        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-#        fastcgi_param PATH_INFO $fastcgi_path_info;
-#    }
+
+    # ADDITIONAL SETTINGS
+    include /etc/nginx/conf.d/*.conf;  # Include additional config files
+
+    # ERROR PAGES
+    error_page 404 /404.html;           # Custom 404 error page
+    error_page 500 502 503 504 /50x.html;  # Custom 50x error page
 }
 ```
 
-`Now let's explain:`
+`Now let's explain nginx conf syntax:`
+
+[Full documentation](http://nginx.org/en/docs/beginners_guide.html)
+
+This is called a directive
+```
+error_page 404 /404.html
+```
+
+This is called a context
+```
+events {
+  worker_connections 1024;
+}
+# Example
+server {
+
+}
+```
