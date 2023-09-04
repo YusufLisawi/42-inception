@@ -493,7 +493,7 @@ This way we run nginx directly and not in daemon mode. Daemon mode is a launch m
 
 Create the `nginx.conf`
 
-```conf
+```nginx
 # NGINX Configuration Cheat Sheet
 
 # EVENTS BLOCK: Global settings related to connections
@@ -548,12 +548,12 @@ http {
 [Full documentation](http://nginx.org/en/docs/beginners_guide.html )
 
 This is called a directive
-```
+```nginx
 error_page 404 /404.html
 ```
 
 This is called a context
-```
+```nginx
 events {
   worker_connections 1024;
 }
@@ -568,17 +568,17 @@ server {
 Docker-compose is a system for launching Docker containers; one might say, it is a kind of add-on to Docker. If in docker files we specified what software to install inside one container environment, then with docker-compose we can control the launch of many similar containers at once, launching them with one command.
 
 First we register the version. The latest version is the third.
-```
+```yaml
 version: '3'
 ```
 The first on the list of our services will be nginx.
-```
+```yaml
 services:
   nginx:
 ```
 
 Next, we tell the docker where our Dockerfile is:
-```
+```yaml
 version: '3'
 
 services:
@@ -589,7 +589,7 @@ services:
 ```
 We set a name for our container, and also forward the required port (in this task we can only use ssl).
 
-```
+```yaml
 version: '3'
 
 services:
@@ -600,7 +600,7 @@ services:
       - "443:443"
 ```
 We add sections so that the container sees our config and our keys, and we also make sure to mount our /var/www - the same folder from the old configuration that we will need for a test run of nginx. Later we will delete it and take files from the WordPress directory.
-```
+```yaml
 version: '3'
 
 services:
@@ -611,9 +611,10 @@ services:
       - "443:443"
     volumes:
       - ./requirements/nginx/tools/html:/var/www/html
-  
+``` 
 Next we specify the type of restart. In combat projects, I personally use the restart type: unless-stopped (always restart, except for the stop command), but the subject prohibits it, so we set it to allowed:
-```
+```yaml
     restart: always
 ```
-...which means always to restart containers in case of failure. 
+...which means always to restart containers in case of failure.
+
