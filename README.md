@@ -618,3 +618,29 @@ Next we specify the type of restart. In combat projects, I personally use the re
 ```
 ...which means always to restart containers in case of failure.
 
+# Creating `MariaDB` Container:
+
+## What is MariaDB
+
+**MariaDB** is a powerful, open-source relational database management system (RDBMS) that serves as a reliable and freely available solution for storing, managing, and retrieving structured data. It is known for its compatibility with MySQL and offers performance improvements, robust security features, and high availability options, making it suitable for a diverse range of applications across different industries.
+
+## Installation Steps:
+
+Here is a list of what we need to set up the container:
+
+- Installed mariadb + mariadb-client
+- Mysql configuration file
+- Mariadb configuration change.
+- File to run sql script
+- Sql script to create a worpdress database
+
+**`Steps`**:
+- install mariadb + mariadb-client in Dockerfile
+- change the mysql configuration (can be done directly in the Dockerfile)
+- change mariadb config (just one line, change directly in Dockerfile)
+- copy the database settings config from outside
+- create a file for sql query
+- put the request body itself into this file
+- execute a database creation request
+- create configuration for docker-compose
+- correctly pass passwords and usernames through environment variables

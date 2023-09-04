@@ -9,3 +9,21 @@ services:
     volumes:
       - ./requirements/nginx/tools/html:/var/www/html
     restart: always
+    networks:
+      - InceptionNetwork
+
+networks:
+  InceptionNetwork:
+    driver: bridge
+
+volumes:
+  db_data:
+    driver_opts:
+      type: none
+      device: /home/yelaissa/db
+      o: bind
+  wp_data:
+    driver_opts:
+      type: none
+      device: /home/yelaissa/wp
+      o: bind
