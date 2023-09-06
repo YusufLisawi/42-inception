@@ -11,19 +11,34 @@ services:
     restart: always
     networks:
       - InceptionNetwork
+  mariadb:
+    build: ./requirements/mariadb
+    environment:
+      DB_USER : ${DB_USER}
+      DB_PASSWD : ${DB_PASSWD}
+      DB_ROOT_PASSWD : ${DB_ROOT_PASSWD}
+    container_name: mariadb
+    ports:
+      - "6969:3306"
+    volumes:
+      - DB:/var/lib/mysql
+    restart: always
+    networks:
+      - InceptionNetwork
+    
 
 networks:
   InceptionNetwork:
     driver: bridge
 
 volumes:
-  db_data:
+  DB:
     driver_opts:
       type: none
-      device: /home/yelaissa/db
+      device: /Users/yusufisawi/db
       o: bind
-  wp_data:
+  WordPress:
     driver_opts:
       type: none
-      device: /home/yelaissa/wp
+      device: /Users/yusufisawi/wp
       o: bind
