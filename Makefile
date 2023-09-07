@@ -18,6 +18,7 @@ all: run
 
 # Define the target to run the containers
 run:
+	sh srcs/requirements/tools/init_db.sh
 	$(UP)
 
 # Define the target to stop and remove the containers
@@ -26,8 +27,7 @@ clean:
 
 # Define the target to stop and remove the containers, as well as any volumes and networks
 fclean: clean
-	sudo rm -rf /home/$(USER)/db/*
-	sudo rm -rf /home/$(USER)/wp/*
+	sudo rm -rf /home/$(USER)/data
 	docker builder prune -a
 	$(FULL_CLEAN)
 

@@ -6,14 +6,13 @@ services:
     container_name: nginx
     ports:
       - "443:443"
-    volumes:
-      - ./requirements/nginx/tools/html:/var/www/html
     restart: always
     networks:
       - InceptionNetwork
   mariadb:
     build: ./requirements/mariadb
     environment:
+      WP_DB_NAME : ${WP_DB_NAME}
       DB_USER : ${DB_USER}
       DB_PASSWD : ${DB_PASSWD}
       DB_ROOT_PASSWD : ${DB_ROOT_PASSWD}
@@ -22,6 +21,26 @@ services:
       - "6969:3306"
     volumes:
       - db_data:/var/lib/mysql
+    restart: always
+    networks:
+      - InceptionNetwork
+  wordpress:
+    build: ./requirements/wordpress
+    environment:
+      WP_HOST: mariadb:3306
+      WP_TITLE: ${WP_TITLE}
+      WP_URL: ${WP_URL}
+      WP_ADMIN: ${WP_ADMIN}
+      WP_ADMIN_PASSWD: ${WP_ADMIN_PASSWD}
+      WP_ADMIN_EMAIL: ${WP_ADMIN_EMAIL}
+      WP_DB_NAME: ${WP_DB_NAME}
+      WP_USER: ${WP_USER}
+      WP_PASSWD: ${WP_PASSWD}
+    container_name: wordpress
+    ports:
+      - "9000:9000"
+    volumes:
+      - wp_data:/var/www/html
     restart: always
     networks:
       - InceptionNetwork
@@ -35,10 +54,10 @@ volumes:
   db_data:
     driver_opts:
       type: none
-      device: /home/yelaissa/db
+      device: /home/yelaissa/data/db
       o: bind
   wp_data:
     driver_opts:
       type: none
-      device: /home/yelaissa/wp
+      device: /home/yelaissa/data/wp
       o: bind
