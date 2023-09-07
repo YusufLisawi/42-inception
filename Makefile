@@ -25,9 +25,12 @@ clean:
 	$(DOWN)
 
 # Define the target to stop and remove the containers, as well as any volumes and networks
-fclean:
-	sudo rm -rf /home/$(USER)/db
-	sudo rm -rf /home/$(USER)/wp
+fclean: clean
+	sudo rm -rf /home/$(USER)/db/*
+	sudo rm -rf /home/$(USER)/wp/*
+	docker builder prune -a
 	$(FULL_CLEAN)
 
 .PHONY: all run clean fclean
+
+# docker rmi --force $(docker images -aq)

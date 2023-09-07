@@ -629,18 +629,57 @@ Next we specify the type of restart. In combat projects, I personally use the re
 Here is a list of what we need to set up the container:
 
 - Installed mariadb + mariadb-client
-- Mysql configuration file
 - Mariadb configuration change.
-- File to run sql script
-- Sql script to create a worpdress database
+- Script to setup the db
 
-**`Steps`**:
-- install mariadb + mariadb-client in Dockerfile
-- change the mysql configuration (can be done directly in the Dockerfile)
-- change mariadb config (just one line, change directly in Dockerfile)
-- copy the database settings config from outside
-- create a file for sql query
-- put the request body itself into this file
-- execute a database creation request
-- create configuration for docker-compose
-- correctly pass passwords and usernames through environment variables
+## Step 1: Dockerfile
+
+**`Install mariadb`**
+``` Dockerfile
+RUN apk update && apk add --no-cache mariadb mariadb-client
+```
+**`Mariadb configuration`**
+
+```Dockerfile
+RUN mkdir -p /run/mysqld; chmod 777 /run/mysqld
+```
+- We must create the directory `/mysqld`, This directory is used by the MySQL daemon to `store its socket file`
+- The directory `/run` is used for storing `temporary files` that are created by running processes. The directory `/run/mysqld` is created to store the `MySQL daemon's socket file`. The socket file is used by clients to connect to the MySQL server. By creating the directory in `/run`, the socket file can be accessed quickly and efficiently by the clients. Additionally, the `/run` directory is usually mounted as a `tmpfs filesystem`, which means that it is stored `in memory` and not on disk. This makes it faster to access and reduces wear on the disk.
+- A socket file is a special type of file used for inter-process communication (IPC) between processes on the same machine. It allows processes to communicate with each other by sending and receiving data through the file. In the context of MySQL, the socket file is used by clients to connect to the MySQL server. When a client connects to the server, it sends a request to the socket file, which is then handled by the MySQL daemon. The daemon then sends a response back to the client through the same socket file.
+
+```Dockerfile
+RUN sed -i "s|skip-networking|#skip-networking|g" /etc/my.cnf.d/mariadb-server.cnf; \
+    sed -i "s|#bind-address|bind-address|g" /etc/my.cnf.d/mariadb-server.cnf
+```
+
+- We need to comment the `skip-network` to disable it, To enable networking so we can connect to mariadb outside the container
+- We also enable the `bind-address=0.0.0.0` so we can connect from any interface
+
+source: [Official docs](https://wiki.alpinelinux.org/wiki/MariaDB)
+
+```Dockerfile
+RUN mariadb-install-db --user=mysql --datadir=/var/lib/mysql --skip-test-db
+```
+- You can use `mysql_install_db` (with older MySQL versions) or `mariadb-install-db`
+mariadb-install-db `initializes` the MariaDB `data directory` and creates the `system tables` in the `mysql database`, if they do not exist. MariaDB uses these tables to manage `privileges`, `roles`, and `plugins`. It also uses them to provide the data for the help command in the mariadb client.
+
+mariadb-install-db works by starting MariaDB Server's mysqld process in --bootstrap mode and sending commands to create the system tables and their content.
+
+source: [about mariadb-install-db](https://mariadb.com/kb/en/mariadb-install-db/)
+
+```Dockerfile
+EXPOSE 3306
+
+COPY ./conf/config.sh .
+
+ENTRYPOINT ["sh", "config.sh"]
+```
+
+- Finally, we expose the port 3306 which is the default port for mysql, and then we copy the config.sh file and run it using ENTRYPOINT
+- In a Dockerfile, `ENTRYPOINT` is used to specify the command that should be run when a container is started from the image. The `ENTRYPOINT` instruction sets the command and parameters that will be executed first when a container is started.
+
+**`The script`**
+
+[Click here to see the script](./srcs/requirements/mariadb/conf/config.sh)
+
+- The script first checks if the directory `/var/lib/mysql/wordpress` exists. If it does not exist, it creates a SQL script `/tmp/db.sql` that sets up the MySQL database and user. The script then runs the `mariadbd` command with the `--bootstrap` option to execute the SQL script and initialize the database. Finally, it removes the SQL script and starts the `mariadbd` command with the `--user` option to run the MySQL daemon as the mysql user.

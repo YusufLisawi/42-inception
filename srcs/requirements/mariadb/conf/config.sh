@@ -1,4 +1,5 @@
 #!bin/sh
+
 if [ ! -d "/var/lib/mysql/wordpress" ]; then
 
         cat << EOF > /tmp/db.sql
@@ -12,8 +13,8 @@ CREATE USER '${DB_USER}'@'%' IDENTIFIED by '${DB_PASSWD}';
 GRANT ALL PRIVILEGES ON wordpress.* TO '${DB_USER}'@'%';
 FLUSH PRIVILEGES;
 EOF
-        /usr/bin/mysqld --user=mysql --bootstrap < /tmp/db.sql
+        mariadbd --user=mysql --bootstrap < /tmp/db.sql
         rm -f /tmp/db.sql
 fi
 
-exec /usr/bin/mysqld --user=mysql
+exec mariadbd --user=mysql

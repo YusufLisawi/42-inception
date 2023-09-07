@@ -2,17 +2,15 @@ FROM alpine:3.18
 
 RUN apk update && apk add --no-cache mariadb mariadb-client
 
-RUN mkdir /var/run/mysqld; \
-    chmod 777 /var/run/mysqld
+RUN mkdir -p /run/mysqld; chmod 777 /run/mysqld
 
 RUN sed -i "s|skip-networking|#skip-networking|g" /etc/my.cnf.d/mariadb-server.cnf; \
     sed -i "s|#bind-address|bind-address|g" /etc/my.cnf.d/mariadb-server.cnf
 
-RUN mysql_install_db --user=mysql --datadir=/var/lib/mysql --skip-test-db
+RUN mariadb-install-db --user=mysql --datadir=/var/lib/mysql --skip-test-db
 
 EXPOSE 3306
 
-COPY ./conf/setup_db.sh .
+COPY ./conf/config.sh .
 
-ENTRYPOINT ["sh", "setup_db.sh"]
-CMD ["rm", "setup_db.sh"]
+ENTRYPOINT ["sh", "config.sh"]
