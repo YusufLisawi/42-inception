@@ -1,7 +1,7 @@
 #!bin/sh
 if [ ! -d "/var/lib/mysql/wordpress" ]; then
 
-        cat << EOF > /init_db.sql
+        cat << EOF > /tmp/db.sql
 USE mysql;
 FLUSH PRIVILEGES;
 DELETE FROM mysql.user WHERE User='';
@@ -12,6 +12,8 @@ CREATE USER '${DB_USER}'@'%' IDENTIFIED by '${DB_PASSWD}';
 GRANT ALL PRIVILEGES ON wordpress.* TO '${DB_USER}'@'%';
 FLUSH PRIVILEGES;
 EOF
-        /usr/bin/mysqld --user=mysql --bootstrap < /tmp/init_db.sql
-        rm -f /tmp/init_db.sql
+        /usr/bin/mysqld --user=mysql --bootstrap < /tmp/db.sql
+        rm -f /tmp/db.sql
 fi
+
+exec /usr/bin/mysqld --user=mysql

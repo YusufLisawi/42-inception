@@ -1,4 +1,4 @@
-version: "3"
+version: "3.8"
 
 services:
   nginx:
@@ -21,7 +21,7 @@ services:
     ports:
       - "6969:3306"
     volumes:
-      - DB:/var/lib/mysql
+      - db_data:/var/lib/mysql
     restart: always
     networks:
       - InceptionNetwork
@@ -32,13 +32,13 @@ networks:
     driver: bridge
 
 volumes:
-  DB:
+  db_data:
     driver_opts:
       type: none
-      device: /Users/yusufisawi/db
+      device: /home/yelaissa/db
       o: bind
-  WordPress:
+  wp_data:
     driver_opts:
       type: none
-      device: /Users/yusufisawi/wp
+      device: /home/yelaissa/wp
       o: bind
