@@ -661,7 +661,7 @@ source: [Official docs](https://wiki.alpinelinux.org/wiki/MariaDB)
 RUN mariadb-install-db --user=mysql --datadir=/var/lib/mysql --skip-test-db
 ```
 - You can use `mysql_install_db` (with older MySQL versions) or `mariadb-install-db`
-mariadb-install-db `initializes` the MariaDB `data directory` and creates the `system tables` in the `mysql database`, if they do not exist. MariaDB uses these tables to manage `privileges`, `roles`, and `plugins`. It also uses them to provide the data for the help command in the mariadb client.
+- mariadb-install-db `initializes` the MariaDB `data directory` and creates the `system tables` in the `mysql database`, if they do not exist. MariaDB uses these tables to manage `privileges`, `roles`, and `plugins`. The `--user` option specifies the user account under which the script should be executed, which in this case is mysql. The `--datadir` option specifies the directory where the database files will be stored, which in this case is `/var/lib/mysql`. The `--skip-test-db` option tells the script not to create a test database.
 
 mariadb-install-db works by starting MariaDB Server's mysqld process in --bootstrap mode and sending commands to create the system tables and their content.
 
@@ -683,3 +683,62 @@ ENTRYPOINT ["sh", "config.sh"]
 [Click here to see the script](./srcs/requirements/mariadb/conf/config.sh)
 
 - The script first checks if the directory `/var/lib/mysql/wordpress` exists. If it does not exist, it creates a SQL script `/tmp/db.sql` that sets up the MySQL database and user. The script then runs the `mariadbd` command with the `--bootstrap` option to execute the SQL script and initialize the database. Finally, it removes the SQL script and starts the `mariadbd` command with the `--user` option to run the MySQL daemon as the mysql user.
+
+## Step 2: docker-compose
+
+```yaml
+  mariadb:
+    build: ./requirements/mariadb
+    environment:
+      DB_USER : ${DB_USER}
+      DB_PASSWD : ${DB_PASSWD}
+      DB_ROOT_PASSWD : ${DB_ROOT_PASSWD}
+    container_name: mariadb
+    ports:
+      - "6969:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    restart: always
+    networks:
+      - InceptionNetwork
+```
+
+- This code defines the service for our `MariaDB` database. 
+- The `build` keyword specifies the path to the directory containing the Dockerfile for building the `MariaDB` image. 
+- The `environment` keyword sets environment variables for the container, including the database `user`, `password`, and `root password`. These values are set using the ${} syntax, which allows them to be replaced with values from `.env` file.
+- The `container_name` keyword sets the name of the container to `mariadb`. The ports keyword maps port `6969` on the host to port `3306` in the container, which is the default port for `MariaDB`. 
+- The `volumes` keyword mount the volume called `db_data` to the `/var/lib/mysql` directory in the container. **This allows the database files to persist even if the container is deleted or recreated**.
+- The `restart` keyword specifies that the container should always be restarted if it stops for any reason. 
+- The `networks` keyword specifies that the container should be connected to a network called `InceptionNetwork`, which is defined elsewhere in the Docker Compose file.
+
+**`Here's how to define the volumes and networks`**
+
+```yaml
+networks:
+  InceptionNetwork:
+    driver: bridge
+```
+
+- The `networks` keyword is used to define a list of networks that the containers in the Docker Compose file can connect to.
+- The `driver` option specifies the driver that should be used for the network. In this case, the `bridge` driver is used (which is the default), which creates a `network bridge` on the host machine **that allows containers to communicate with each other**.
+
+```yaml
+volumes:
+  db_data:
+    driver_opts:
+      type: none
+      device: /home/yelaissa/db
+      o: bind
+  wp_data:
+    driver_opts:
+      type: none
+      device: /home/yelaissa/wp
+      o: bind
+```
+
+- The `volumes` keyword is used to define a list of volumes that the containers in the Docker Compose file can use to store data.
+- Each volume has a `driver_opts` section that specifies the options for the driver that should be used for the volume. In this case, 
+  - The `type` option is set to none, which means that no specific driver is used.
+  - The `device` option specifies the path on the host machine where the data should be stored.
+  - The `o` option specifies the mount options for the volume.
+  **`bind` is a `mount option` that allows a directory or file on the host machine to be mounted into a container as a volume. When a volume is mounted with the bind option, the container can read and write to the files in the directory on the host machine, and changes made in the container will be reflected on the host machine.**
