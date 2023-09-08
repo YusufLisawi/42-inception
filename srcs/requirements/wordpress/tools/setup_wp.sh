@@ -37,3 +37,7 @@ if [ $? -eq 0 ]
 then
     wp user create ${WP_USER} ${WP_USER}.42.fr --role=editor --user_pass=${WP_PASSWD} --path=/var/www/html --allow-root 
 fi
+
+wp core install
+
+exec "$@"

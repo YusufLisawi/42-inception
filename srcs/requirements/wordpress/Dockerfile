@@ -1,23 +1,10 @@
-FROM alpine:3.18
+FROM debian:bookworm
 
-ARG PHP_V=8.2
-
-RUN apk update && apk upgrade && apk add --no-cache \
-    php${PHP_V} \
-    php${PHP_V}-fpm \
-    php${PHP_V}-mysqli \
-    php${PHP_V}-json \
-    php${PHP_V}-curl \
-    php${PHP_V}-dom \
-    php${PHP_V}-exif \
-    php${PHP_V}-fileinfo \
-    php${PHP_V}-mbstring \
-    php${PHP_V}-openssl \
-    php${PHP_V}-xml \
-    php${PHP_V}-zip \
-    php${PHP_V}-redis \
-    wget && \
-    sed -i "s|listen = 127.0.0.1:9000|listen = 9000|g" /etc/php${PHP_V}/php-fpm.d/www.conf
+RUN apt update \ 
+    && apt install -f -y php8.2-cli php8.2-fpm php8.2-mysql php-json php8.2-opcache \
+    php8.2-mbstring php8.2-xml php8.2-gd php8.2-curl mariadb-client curl sendmail \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
+    && sed -i "s|listen = 127.0.0.1:9000|listen = 9000|g" /etc/php/8.2/fpm/pool.d/www.conf
 
 COPY ./tools/setup_wp.sh .
 
@@ -25,4 +12,4 @@ EXPOSE 9000
 
 ENTRYPOINT ["sh", "setup_wp.sh"]
 
-CMD ["/usr/sbin/php-fpm8.2", "-F"]
+CMD ["php-fpm8.2", "-F"]

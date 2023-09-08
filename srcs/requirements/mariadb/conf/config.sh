@@ -16,3 +16,5 @@ EOF
         mariadbd --user=mysql --bootstrap < /tmp/db.sql
         rm -f /tmp/db.sql
 fi
+
+exec "$@"

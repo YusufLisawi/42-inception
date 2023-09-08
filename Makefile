@@ -5,7 +5,7 @@ PROJECT_NAME = inception
 DIR = srcs
 
 # Define the Docker Compose command to run the containers
-UP = docker-compose -p $(PROJECT_NAME) -f $(DIR)/docker-compose.yml up -d
+UP = docker-compose -p $(PROJECT_NAME) -f $(DIR)/docker-compose.yml up #-d
 
 # Define the Docker Compose command to stop and remove the containers
 DOWN = docker-compose -p $(PROJECT_NAME) -f $(DIR)/docker-compose.yml down
@@ -28,6 +28,7 @@ clean:
 # Define the target to stop and remove the containers, as well as any volumes and networks
 fclean: clean
 	sudo rm -rf /home/$(USER)/data
+	sudo rm -rf /Users/$(USER)/data
 	docker builder prune -a
 	$(FULL_CLEAN)
 
