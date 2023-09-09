@@ -8,10 +8,12 @@ DOWN = docker-compose -p $(PROJECT_NAME) -f $(DIR)/docker-compose.yml down
 
 FULL_CLEAN = docker-compose -p $(PROJECT_NAME) -f $(DIR)/docker-compose.yml down -v --remove-orphans
 
-all: run
-
-run:
+all:
 	sh srcs/requirements/tools/init_db.sh
+	$(UP)
+
+re:
+	$(DOWN)
 	$(UP)
 
 clean:

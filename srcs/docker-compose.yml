@@ -4,8 +4,10 @@ services:
   nginx:
     container_name: nginx
     build: ./requirements/nginx
+    image: nginx
     volumes:
       - wp_data:/var/www/html/wordpress
+      - portfolio_data:/var/www/html/portfolio
       - ./requirements/nginx/conf/nginx.conf:/etc/nginx/http.d/nginx.conf
     ports:
       - "443:443"
@@ -17,6 +19,7 @@ services:
   mariadb:
     container_name: mariadb
     build: ./requirements/mariadb
+    image: mariadb
     environment:
       WP_DB_NAME : ${WP_DB_NAME}
       DB_USER : ${DB_USER}
@@ -33,6 +36,7 @@ services:
   wordpress:
     container_name: wordpress
     build: ./requirements/wordpress
+    image: wordpress
     environment:
       WP_HOST: mariadb:3306
       WP_TITLE: ${WP_TITLE}
@@ -53,6 +57,25 @@ services:
     restart: always
     networks:
       - InceptionNetwork
+  portainer:
+    container_name: portainer
+    build: ./requirements/bonus/portainer/
+    image: portainer
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    networks:
+      - InceptionNetwork
+  portfolio:
+    container_name: portfolio
+    build: ./requirements/bonus/portfolio/
+    image: portfolio
+    restart: always
+    volumes:
+      - portfolio_data:/var/www/html/portfolio
+    networks:
+      - InceptionNetwork
 
 networks:
   InceptionNetwork:
@@ -61,13 +84,25 @@ networks:
 volumes:
   db_data:
     driver_opts:
+      o: bind
       type: none
       device: /home/yelaissa/data/db
       # device: /Users/yusufisawi/data/db
-      o: bind
   wp_data:
     driver_opts:
+      o: bind
       type: none
       device: /home/yelaissa/data/wp
       # device: /Users/yusufisawi/data/wp
+  portainer_data:
+    driver_opts:
       o: bind
+      type: none
+      device: /home/yelaissa/data/portainer
+      # device: /Users/yusufisawi/data/portainer
+  portfolio_data:
+    driver_opts:
+      o: bind
+      type: none
+      device: /home/yelaissa/data/portfolio
+      # device: /Users/yusufisawi/data/portfolio
