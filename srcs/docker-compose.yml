@@ -1,6 +1,19 @@
 version: "3.8"
 
 services:
+  nginx:
+    container_name: nginx
+    build: ./requirements/nginx
+    volumes:
+      - wp_data:/var/www/html/wordpress
+      - ./requirements/nginx/conf/nginx.conf:/etc/nginx/http.d/nginx.conf
+    ports:
+      - "443:443"
+    restart: always
+    depends_on:
+      - wordpress
+    networks:
+      - InceptionNetwork
   mariadb:
     container_name: mariadb
     build: ./requirements/mariadb
@@ -36,24 +49,10 @@ services:
       - "9000:9000"
     volumes:
       - ./requirements/wordpress/tools/setup_wp.sh:/setup_wp.sh
-      - wp_data:/var/www/html
+      - wp_data:/var/www/html/wordpress
     restart: always
     networks:
       - InceptionNetwork
-  nginx:
-    container_name: nginx
-    build: ./requirements/nginx
-    volumes:
-      - wp_data:/var/www/html
-      - ./requirements/nginx/conf/nginx.conf:/etc/nginx/http.d/nginx.conf
-    ports:
-      - "443:443"
-    restart: always
-    depends_on:
-      - wordpress
-    networks:
-      - InceptionNetwork
-    
 
 networks:
   InceptionNetwork:
