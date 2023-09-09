@@ -1,5 +1,5 @@
 #!/bin/bash
-if [[ ! -d "/home/${USER}/data" ]] && [[ ! -d "/Users/${USER}/data" ]]
+if [ ! -d "/home/${USER}/data" ] && [ ! -d "/Users/${USER}/data" ]
 then
         mkdir ~/data
         mkdir ~/data/db

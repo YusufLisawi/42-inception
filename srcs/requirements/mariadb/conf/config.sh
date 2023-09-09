@@ -15,6 +15,8 @@ FLUSH PRIVILEGES;
 EOF
         mariadbd --user=mysql --bootstrap < /tmp/db.sql
         rm -f /tmp/db.sql
+else
+        echo "Database already exists"
 fi
 
 exec "$@"

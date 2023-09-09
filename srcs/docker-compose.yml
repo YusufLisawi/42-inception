@@ -1,34 +1,24 @@
 version: "3.8"
 
 services:
-  nginx:
-    build: ./requirements/nginx
-    container_name: nginx
-    volumes:
-      - wp_data:/var/www/html
-    ports:
-      - "443:443"
-    restart: always
-    depends_on:
-      - wordpress
-    networks:
-      - InceptionNetwork
   mariadb:
+    container_name: mariadb
     build: ./requirements/mariadb
     environment:
       WP_DB_NAME : ${WP_DB_NAME}
       DB_USER : ${DB_USER}
       DB_PASSWD : ${DB_PASSWD}
       DB_ROOT_PASSWD : ${DB_ROOT_PASSWD}
-    container_name: mariadb
     ports:
       - "6969:3306"
     volumes:
       - db_data:/var/lib/mysql
+      - ./requirements/mariadb/conf/config.sh:/config.sh
     restart: always
     networks:
       - InceptionNetwork
   wordpress:
+    container_name: wordpress
     build: ./requirements/wordpress
     environment:
       WP_HOST: mariadb:3306
@@ -40,14 +30,27 @@ services:
       WP_DB_NAME: ${WP_DB_NAME}
       WP_USER: ${WP_USER}
       WP_PASSWD: ${WP_PASSWD}
-    container_name: wordpress
     depends_on:
       - mariadb
     ports:
       - "9000:9000"
     volumes:
+      - ./requirements/wordpress/tools/setup_wp.sh:/setup_wp.sh
       - wp_data:/var/www/html
     restart: always
+    networks:
+      - InceptionNetwork
+  nginx:
+    container_name: nginx
+    build: ./requirements/nginx
+    volumes:
+      - wp_data:/var/www/html
+      - ./requirements/nginx/conf/nginx.conf:/etc/nginx/http.d/nginx.conf
+    ports:
+      - "443:443"
+    restart: always
+    depends_on:
+      - wordpress
     networks:
       - InceptionNetwork
     
@@ -60,12 +63,12 @@ volumes:
   db_data:
     driver_opts:
       type: none
-      # device: /home/yelaissa/data/db
-      device: /Users/yusufisawi/data/db
+      device: /home/yelaissa/data/db
+      # device: /Users/yusufisawi/data/db
       o: bind
   wp_data:
     driver_opts:
       type: none
-      # device: /home/yelaissa/data/wp
-      device: /Users/yusufisawi/data/wp
+      device: /home/yelaissa/data/wp
+      # device: /Users/yusufisawi/data/wp
       o: bind
