@@ -24,15 +24,15 @@ rm -rf /var/www/html/wordpress/*
 
 wp core download --allow-root
 
-
+echo "Generating WordPress 'wp-config.php'..."
 wp config create --allow-root --dbname=${WP_DB_NAME} --dbuser=${WP_USER} --dbpass=${WP_PASSWD} --dbhost=${WP_HOST}
 
-wp user create ${WP_ADMIN} ${WP_ADMIN_EMAIL} --role=administrator --user_pass=${WP_ADMIN_PASSWD} --path=/var/www/html/wordpress --allow-root
-
+echo "Installing WordPress deps..."
 wp core install --allow-root --url=${WP_URL} --title=${WP_TITLE} --admin_user=${WP_ADMIN} --admin_password=${WP_ADMIN_PASSWD} --admin_email=${WP_ADMIN_EMAIL}
 
-wp user create ${WP_USER} yusufisawii@gmail.com --role=editor --user_pass=${WP_PASSWD} --path=/var/www/html/wordpress --allow-root 
+echo "Creating users..."
+wp user create ${WP_ADMIN} ${WP_ADMIN_EMAIL} --role=administrator --user_pass=${WP_ADMIN_PASSWD} --path=/var/www/html/wordpress --allow-root
 
-wp core install
+wp user create ${WP_USER} yusufisawii@gmail.com --role=editor --user_pass=${WP_PASSWD} --path=/var/www/html/wordpress --allow-root 
 
 exec "$@"

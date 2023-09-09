@@ -48,8 +48,8 @@ services:
     ports:
       - "9000:9000"
     volumes:
-      - ./requirements/wordpress/tools/setup_wp.sh:/setup_wp.sh
       - wp_data:/var/www/html/wordpress
+      - ./requirements/wordpress/tools/setup_wp.sh:/setup_wp.sh
     restart: always
     networks:
       - InceptionNetwork
