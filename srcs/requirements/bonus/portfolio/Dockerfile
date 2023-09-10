@@ -5,4 +5,4 @@ RUN apk update && apk add --no-cache git \
 
 WORKDIR /var/www/html/portfolio
 
-RUN git clone https://github.com/YusufLisawi/yusuflisawi.github.io .
+# COPY ./src/* .

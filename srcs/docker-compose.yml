@@ -7,7 +7,7 @@ services:
     image: nginx
     volumes:
       - wp_data:/var/www/html/wordpress
-      - portfolio_data:/var/www/html/portfolio
+      - ./requirements/bonus/portfolio/src:/var/www/html/portfolio
       - ./requirements/nginx/conf/nginx.conf:/etc/nginx/http.d/nginx.conf
     ports:
       - "443:443"
@@ -63,8 +63,8 @@ services:
     image: portainer
     restart: always
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
       - portainer_data:/data
+      - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - InceptionNetwork
   portfolio:
@@ -73,7 +73,7 @@ services:
     image: portfolio
     restart: always
     volumes:
-      - portfolio_data:/var/www/html/portfolio
+      - ./requirements/bonus/portfolio/src:/var/www/html/portfolio
     networks:
       - InceptionNetwork
 
@@ -86,23 +86,17 @@ volumes:
     driver_opts:
       o: bind
       type: none
-      device: /home/yelaissa/data/db
-      # device: /Users/yusufisawi/data/db
+      # device: /home/yelaissa/data/db
+      device: /Users/yusufisawi/data/db
   wp_data:
     driver_opts:
       o: bind
       type: none
-      device: /home/yelaissa/data/wp
-      # device: /Users/yusufisawi/data/wp
+      # device: /home/yelaissa/data/wp
+      device: /Users/yusufisawi/data/wp
   portainer_data:
     driver_opts:
       o: bind
       type: none
-      device: /home/yelaissa/data/portainer
-      # device: /Users/yusufisawi/data/portainer
-  portfolio_data:
-    driver_opts:
-      o: bind
-      type: none
-      device: /home/yelaissa/data/portfolio
-      # device: /Users/yusufisawi/data/portfolio
+      # device: /home/yelaissa/data/portainer
+      device: /Users/yusufisawi/data/portainer
