@@ -5,4 +5,5 @@ then
         mkdir -p ~/data/wp
         mkdir -p ~/data/portainer
         mkdir -p ~/data/portfolio
+        mkdir -p ~/data/adminer
 fi

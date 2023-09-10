@@ -21,23 +21,13 @@ A container engine, also known as a container runtime, is a software program tha
 
 **Container Engines:** Container runtimes are software components that manage the lifecycle of containers, including configuring their environment, starting, stopping, and managing their execution.
 
----
-
-   **Popular Container Engines: Some of the most widely used container engines include:**
-
-- Docker: Docker is an open-source containerization technology that provides a complete ecosystem for building, packaging, and deploying containers. It includes Docker Engine, which acts as the container runtime, and Docker CLI, which allows users to interact with the Docker daemon[[2]](https://docs.docker.com/engine/).
-
-- containerd: containerd is an open-source container runtime that focuses on simplicity, robustness, and portability. It is designed to be used as a building block for higher-level container orchestration platforms, such as Kubernetes[[1]](https://sarusso.github.io/blog/container-engines-runtimes-orchestrators.html).
-
-- Many more ...
-
 ## Docker
-Docker is a container-based model where containers are used to execute applications on any operating system.
-Docker containers use the same operating system as the host, resulting in high performance and less boot-up time.
-Docker containers are smaller than VMs, making it easier to transfer files and share data.
-Docker containers start with no delay since the OS is already up and running.
-Docker containers are designed to save time in the deployment process of an application.
-Docker containers provide a more flexible and lightweight approach to application deployment.
+- Docker is a container-based model where containers are used to execute applications on any operating system.
+- Docker containers use the same operating system as the host, resulting in high performance and less boot-up time.
+- Docker containers are smaller than VMs, making it easier to transfer files and share data.
+- Docker containers start with no delay since the OS is already up and running.
+- Docker containers are designed to save time in the deployment process of an application.
+- Docker containers provide a more flexible and lightweight approach to application deployment.
 
 ### Docker engine
 <img src="https://www.docker.com/wp-content/uploads/2021/10/Docker-Website-2018-Diagrams-071918-V5_a-Docker-Engine-page-first-panel.png" width="50%">
