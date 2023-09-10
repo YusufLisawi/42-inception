@@ -1,28 +1,27 @@
-PROJECT_NAME = inception
+NAME = inception
 
-DIR = srcs
+CREATE_DIRS = sh srcs/requirements/tools/init_db.sh
 
-UP = docker-compose -p $(PROJECT_NAME) -f $(DIR)/docker-compose.yml up -d --build
-
-DOWN = docker-compose -p $(PROJECT_NAME) -f $(DIR)/docker-compose.yml down
-
-FULL_CLEAN = docker-compose -p $(PROJECT_NAME) -f $(DIR)/docker-compose.yml down -v --remove-orphans
+build:
+	@echo "Building images..."
+	$(CREATE_DIRS)
+	@docker-compose -p $(NAME) -f srcs/docker-compose.yml up -d --build
 
 all:
-	sh srcs/requirements/tools/init_db.sh
-	$(UP)
-
-re:
-	$(DOWN)
-	$(UP)
+	@echo "Building images..."
+	$(CREATE_DIRS)
+	@docker-compose -p $(NAME) -f srcs/docker-compose.yml up -d
 
 clean:
-	$(DOWN)
+	@echo "Removing containers..."
+	docker-compose -p $(NAME) -f srcs/docker-compose.yml down
 
 fclean: clean
-	sudo rm -rf /home/$(USER)/data
-	sudo rm -rf /Users/$(USER)/data
-	docker builder prune -a
-	$(FULL_CLEAN)
+	@echo "Full cleaning..."
+	@sudo rm -rf /home/$(USER)/data
+	@docker builder prune -a -f
+	docker-compose -p $(NAME) -f srcs/docker-compose.yml down -v --remove-orphans
 
-.PHONY: all run clean fclean
+re: fclean all
+
+.PHONY: build all re clean fclean
