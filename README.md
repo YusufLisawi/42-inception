@@ -144,20 +144,6 @@ Here's a sheet cheat:
 
 **Docker Compose** is a tool for defining and running multi-container Docker applications. It allows you to define your application's services, networks, and volumes in a single YAML file, making it easier to manage and deploy complex applications with multiple interconnected containers. Docker Compose is particularly useful for development, testing, and production scenarios where multiple containers need to work together.
 
-## Uses of Docker Compose
-
-Docker Compose simplifies the following tasks:
-
-1. **Multi-Container Applications**: Easily define and manage applications composed of multiple containers that need to work together, such as web applications with databases, caching, and messaging services.
-
-2. **Service Definitions**: Specify the configuration for each service, including the base image, environment variables, ports, volumes, and more, all in a human-readable YAML format.
-
-3. **Networking**: Automatically create and manage isolated networks for your containers, allowing them to communicate securely with each other. You can also specify custom network configurations.
-
-4. **Volume Management**: Define named volumes for persisting data between container restarts and even between different containers. This is essential for databases and stateful applications.
-
-5. **Environment Configuration**: Set environment variables for containers, enabling you to customize container behavior without changing the container image.
-
 ## Docker Compose instructions
 
 ```yaml
@@ -171,9 +157,14 @@ services:  # Define your services here
       context: ./myapp  # Specify the build context (directory containing the Dockerfile)
       args:
         - VAR_NAME=VALUE  # Define build arguments (if needed)
+    image: service1 # if this instruction is after a "build" instruction it's defines the image name, but if it's called before, then a pull request for the image name entered from the docker hub
     container_name: my_custom_container_1  # Assign a custom container name
+    depends_on: # Specifies that this service depend on another service, so this will be started after the service it's depends on
+      - service_name 
     expose:
       - 8080  # Expose port 8080 within the container
+    ports:
+      - "8081:8080" # maps port 8080 to 8081 on our local machine
     networks:
       - my_custom_network  # Connect to the custom Docker network named "my_custom_network"
     volumes:
@@ -237,14 +228,6 @@ Here are some common Docker Compose commands and their explanations:
   - `--no-cache`: Do not use cached images.
 - **Example**: `docker-compose build` builds all services.
 
-### `docker-compose up`
-
-- **Description**: Start containers defined in the `docker-compose.yml` file.
-- **Usage**: `docker-compose up [options] [SERVICE...]`
-- **Options**:
-  - `-d, --detach`: Run containers in the background.
-- **Example**: `docker-compose up -d` starts containers in detached mode.
-
 These are just a few of the many commands and options available in Docker Compose. It's a powerful tool for simplifying the management of multi-container applications and improving the development and deployment process.
 
 ---
@@ -284,6 +267,8 @@ Docker Networks enable containers to communicate with each other and with extern
 
 3. **External Communication**: Containers can access external networks and services by routing traffic through the host's network.
 
+- source: [about networking in docker-compose](https://docs.docker.com/compose/networking/)
+
 ## Docker Volumes
 
 Docker Volumes provide a way to persist and share data between containers and the host system. They are essential for managing data that should survive container restarts and removals.
@@ -313,6 +298,18 @@ Docker Volumes provide a way to persist and share data between containers and th
 3. **Data Persistence**: Data stored in Docker volumes persists even when the associated container is removed or stopped.
 
 4. **Data Sharing**: Volumes can be shared among multiple containers, enabling data sharing and synchronization.
+
+### Docker volumes options in docker-compose
+
+The `driver_opts` section in a Docker Compose file is used to specify options for the volume driver that is used to create the volume. In this case, the `driver_opts` section is being used to specify the `type` and `device` options for the local volume driver.
+
+```yaml
+driver_opts:
+      o: bind
+      type: none
+      device: /home/yelaissa/data/db
+```
+- source: [about docker-compose volumes](https://medium.com/@alexanderyegorov_67403/docker-volumes-changes-in-compose-version-3-95a7c48f6d17)
 
 ## Summary
 
@@ -732,3 +729,95 @@ volumes:
   - The `device` option specifies the path on the host machine where the data should be stored.
   - The `o` option specifies the mount options for the volume.
   **`bind` is a `mount option` that allows a directory or file on the host machine to be mounted into a container as a volume. When a volume is mounted with the bind option, the container can read and write to the files in the directory on the host machine, and changes made in the container will be reflected on the host machine.**
+
+---
+
+### What is WordPress?
+
+**WordPress** is a popular open-source content management system (CMS) used for creating websites and blogs. It allows users to easily manage and publish content without extensive technical knowledge. WordPress is highly customizable and offers a wide range of themes and plugins to extend its functionality.
+
+Resource: [WordPress.org](https://wordpress.org/)
+
+### What Does a Container Need to Install WordPress?
+
+To run WordPress in a container, you need the following components:
+
+1. **Web Server**: A web server like **Nginx** or **Apache** to handle HTTP requests and serve web pages.
+
+2. **PHP**: A server-side scripting language like **PHP** to execute WordPress code.
+
+3. **Database**: A database system like **MySQL** or **MariaDB** to store content and settings.
+
+4. **WordPress**: The WordPress application files.
+
+These components are often packaged in separate containers to create a microservices architecture.
+
+### Nginx Configuration for Hosting WordPress:
+
+To host WordPress using Nginx, you'll need an Nginx configuration that includes:
+
+- A `location` block to handle PHP requests, typically using `fastcgi_pass` to send PHP requests to a **PHP-FPM** backend.
+  
+  ```nginx
+  location ~ \.php$ {
+      fastcgi_pass php-fpm-wordpress-container:9000;
+      # Other FastCGI settings...
+  }
+  ```
+
+- Server blocks (virtual hosts) to define how Nginx should handle different domains or subdomains.
+
+  ```nginx
+  server {
+      server_name example.com;
+      # Other server settings...
+  }
+  ```
+
+- Configuration for SSL/TLS if you want to enable secure HTTPS connections. 
+
+  ```nginx
+  server {
+      listen 443 ssl;
+      server_name example.com;
+      ssl_certificate /etc/nginx/ssl/server.crt;
+      ssl_certificate_key /etc/nginx/ssl/server.key;
+      # Other SSL settings...
+  }
+  ```
+
+Resource: [How to configure nginx with wordpress](https://www.ionos.com/digitalguide/hosting/blogs/wordpress-nginx/)
+
+### What is PHP-FPM?
+
+**PHP-FPM** (PHP FastCGI Process Manager) is a PHP FastCGI implementation that handles PHP requests from a web server. It manages PHP processes, making PHP execution more efficient and scalable. PHP-FPM can be used with web servers like Nginx or Apache to serve PHP web applications.
+
+Resource: [PHP-FPM Documentation](https://php-fpm.org/)
+
+### What is FastCGI?
+
+**FastCGI** (Fast Common Gateway Interface) is a protocol that enables web servers to communicate with external processes like PHP-FPM to execute dynamic content. It offers better performance and scalability compared to traditional CGI. FastCGI processes can be reused for multiple requests, reducing overhead.
+
+Resource: [FastCGI Specification](http://www.mit.edu/~yandros/doc/specs/fcgi-spec.html)
+
+### How Does It Work?
+
+1. When a user accesses a WordPress page, Nginx receives the request.
+
+2. Nginx checks its configuration and routes PHP requests to the specified `location` block.
+
+3. In the PHP `location` block, `fastcgi_pass` sends the PHP request to PHP-FPM, a separate process.
+
+4. PHP-FPM processes the PHP script, generates dynamic content, and sends the response back to Nginx.
+
+5. Nginx then sends the response to the user's web browser.
+
+This process allows Nginx and PHP-FPM to work together efficiently to serve dynamic web pages generated by WordPress.
+
+By combining these technologies, you can create a high-performance and scalable environment for hosting WordPress websites within containers.
+
+Resources for Further Learning:
+- [Why do you need php-fpm](https://www.plesk.com/blog/various/why-do-you-need-php-fpm/)
+- [Installing wordpress cli (wp-cli) `helps to configure and install wp`](https://make.wordpress.org/cli/handbook/guides/installing/)
+- [Simple wordpress configuration using wp-cli](https://make.wordpress.org/cli/handbook/guides/quick-start/)
+**`We need to configure the wp-config.php so that the wordpress container will be started and configured already`**
