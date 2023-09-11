@@ -2,9 +2,8 @@ version: "3.8"
 
 services:
   nginx:
-    container_name: nginx
     build: ./requirements/nginx
-    image: nginx
+    container_name: nginx
     volumes:
       - wp_data:/var/www/html/wordpress
       - adminer_data:/var/www/html/adminer
@@ -20,9 +19,8 @@ services:
     networks:
       - InceptionNetwork
   mariadb:
-    container_name: mariadb
     build: ./requirements/mariadb
-    image: mariadb
+    container_name: mariadb
     environment:
       WP_DB_NAME : ${WP_DB_NAME}
       DB_USER : ${DB_USER}
@@ -36,9 +34,8 @@ services:
     networks:
       - InceptionNetwork
   wordpress:
-    container_name: wordpress
     build: ./requirements/wordpress
-    image: wordpress
+    container_name: wordpress
     environment:
       WP_HOST: mariadb:3306
       WP_TITLE: ${WP_TITLE}
@@ -60,9 +57,8 @@ services:
       - InceptionNetwork
   # Bonus
   portainer:
-    container_name: portainer
     build: ./requirements/bonus/portainer/
-    image: portainer
+    container_name: portainer
     restart: always
     volumes:
       - portainer_data:/data
@@ -70,18 +66,16 @@ services:
     networks:
       - InceptionNetwork
   portfolio:
-    container_name: portfolio
     build: ./requirements/bonus/portfolio/
-    image: portfolio
+    container_name: portfolio
     restart: always
     volumes:
       - ./requirements/bonus/portfolio/src:/var/www/html/portfolio
     networks:
       - InceptionNetwork
   adminer:
-    container_name: adminer
     build: ./requirements/bonus/adminer/
-    image: adminer
+    container_name: adminer
     restart: always
     ports:
       - "8080:8080"
@@ -99,19 +93,19 @@ volumes:
     driver_opts:
       o: bind
       type: none
-      device: /home/yelaissa/data/db
+      device: ~/data/db
   wp_data:
     driver_opts:
       o: bind
       type: none
-      device: /home/yelaissa/data/wp
+      device: ~/data/wp
   portainer_data:
     driver_opts:
       o: bind
       type: none
-      device: /home/yelaissa/data/portainer
+      device: ~/data/portainer
   adminer_data:
     driver_opts:
       o: bind
       type: none
-      device: /home/yelaissa/data/adminer
+      device: ~/data/adminer
