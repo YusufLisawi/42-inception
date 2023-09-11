@@ -8,6 +8,8 @@ RUN mkdir /etc/nginx/ssl && \
     -out /etc/nginx/ssl/yelaissa.crt  \
     -subj "/C=MA/L=Tetouan/O=42/OU=1337 MED/CN=yelaissa.42.fr"
 
+COPY ./conf/nginx.conf /etc/nginx/http.d/nginx.conf
+
 EXPOSE 443
 
 CMD ["nginx", "-g", "daemon off;"]

@@ -9,7 +9,6 @@ services:
       - wp_data:/var/www/html/wordpress
       - adminer_data:/var/www/html/adminer
       - ./requirements/bonus/portfolio/src:/var/www/html/portfolio
-      - ./requirements/nginx/conf/nginx.conf:/etc/nginx/http.d/nginx.conf
     ports:
       - "443:443"
     restart: always
@@ -33,7 +32,6 @@ services:
       - "6969:3306"
     volumes:
       - db_data:/var/lib/mysql
-      - ./requirements/mariadb/conf/config.sh:/config.sh
     restart: always
     networks:
       - InceptionNetwork
@@ -57,7 +55,6 @@ services:
       - "9000:9000"
     volumes:
       - wp_data:/var/www/html/wordpress
-      - ./requirements/wordpress/tools/setup_wp.sh:/setup_wp.sh
     restart: always
     networks:
       - InceptionNetwork

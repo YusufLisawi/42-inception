@@ -10,6 +10,8 @@ RUN mariadb-install-db --user=mysql --datadir=/var/lib/mysql --skip-test-db
 
 EXPOSE 3306
 
+COPY ./conf/config.sh /config.sh
+
 ENTRYPOINT ["sh", "config.sh"]
 
 CMD ["mariadbd", "--user=mysql", "--bind-address=0.0.0.0"]

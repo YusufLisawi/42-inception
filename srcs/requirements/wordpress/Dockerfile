@@ -11,6 +11,8 @@ RUN apt update && apt install -f -y \
 
 EXPOSE 9000
 
+COPY ./tools/setup_wp.sh /setup_wp.sh
+
 ENTRYPOINT ["sh", "setup_wp.sh"]
 
 CMD ["php-fpm8.2", "-F", "-R"]

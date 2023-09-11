@@ -2,11 +2,6 @@ NAME = inception
 
 CREATE_DIRS = sh srcs/requirements/tools/init_db.sh
 
-build:
-	@echo "Building images..."
-	$(CREATE_DIRS)
-	@docker-compose -p $(NAME) -f srcs/docker-compose.yml up -d --build
-
 all:
 	@echo "Building images..."
 	$(CREATE_DIRS)
