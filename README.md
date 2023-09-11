@@ -307,7 +307,7 @@ The `driver_opts` section in a Docker Compose file is used to specify options fo
 driver_opts:
       o: bind
       type: none
-      device: ~/data/db
+      device: /home/yelaissa/data/db
 ```
 - source: [about docker-compose volumes](https://medium.com/@alexanderyegorov_67403/docker-volumes-changes-in-compose-version-3-95a7c48f6d17)
 
@@ -714,12 +714,12 @@ volumes:
   db_data:
     driver_opts:
       type: none
-      device: ~/db
+      device: /home/yelaissa/db
       o: bind
   wp_data:
     driver_opts:
       type: none
-      device: ~/wp
+      device: /home/yelaissa/wp
       o: bind
 ```
 

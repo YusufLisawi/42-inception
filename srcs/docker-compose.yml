@@ -93,19 +93,19 @@ volumes:
     driver_opts:
       o: bind
       type: none
-      device: ~/data/db
+      device: /home/yelaissa/data/db
   wp_data:
     driver_opts:
       o: bind
       type: none
-      device: ~/data/wp
+      device: /home/yelaissa/data/wp
   portainer_data:
     driver_opts:
       o: bind
       type: none
-      device: ~/data/portainer
+      device: /home/yelaissa/data/portainer
   adminer_data:
     driver_opts:
       o: bind
       type: none
-      device: ~/data/adminer
+      device: /home/yelaissa/data/adminer
